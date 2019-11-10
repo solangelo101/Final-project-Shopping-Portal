@@ -53,28 +53,33 @@ mongoose.set('useFindAndModify', false);
 //  array cart
 var Cart=new Schema({
   User:String,
-  Name:String,
-  Id:Number,
+  Id:String,
   Quantity:Number,
-  Price:Number,
 })
 var cart=mongoose.model("cart",Cart);
-app.post('/addtocart',(req,res)=>
+
+app.post('/addToCart',(req,res)=>
 {
   console.log(req.body);
   var myData=new cart();
-    myData.User=req.body.User;
-    myData.Name=req.body.Name;
-    myData.Id=req.body.Id;
-    myData.Quantity=req.body.Qunatity;
-    myData.Price=req.body.Price;
-
+  myData.User=req.body.user;
+  myData.Id=req.body.id;
+  myData.Quantity=req.body.quantity;
   myData.save(function(err)
-{
+  {
   //body ..
-})
+  if(!err)
+  {
+    console.log("Data Saved");
+    console.log(myData);
+  }
+  else {
+    console.log(err)
+  }
+  })
     return res.redirect('listproducts');
 })
+
 app.get('/cart',(req,res)=>
 {
   cart.find({},function(err,docs)
@@ -83,6 +88,17 @@ app.get('/cart',(req,res)=>
 })
 })
 
+app.get('/checkquantity',(req,res)=>
+{
+  products.findOne({_id:req.query.id},function(err,docs)
+{
+  if(!err)
+  {
+    console.log('\tcheck quantity\t',docs.Quantity,'\n');
+    res.send(docs);
+  }
+});
+})
 
 // array users
 var User=new Schema({

@@ -1,32 +1,8 @@
-var products=getStoredProducts();
-var cart=getCart();
-var activeuser=getActiveUser();
-var users=getUsers();
+var rhttp=new XMLHttpRequest();
 var xhttp=new XMLHttpRequest();
-
-function getUsers()
-{
-  xhttp.open('GET','/users');
-  xhttp.send();
-  xhttp.onreadystatechange=function()
-{
-    // readyState 4 means the request is done.
-    // status 200 is a successful return.
-    if (xhttp.readyState == 4 && xhttp.status == 200)
-    {
-      //document.getElementById("users").innerHTML = xhttp.responseText; // 'This is the output.'
-      let users = JSON.parse( xhttp.responseText) ;
-      if(Array.isArray( users)  && users.length )
-      {
-      }
-    }
-    else
-    {
-        // An error occurred during the request.
-       console.log(xhttp.status) ;
-    }
-  };
-}
+var ahttp=new XMLHttpRequest();
+var http=new XMLHttpRequest();
+var activeuser=getActiveUser();
 
 function getActiveUser()
 {
@@ -37,35 +13,6 @@ function getActiveUser()
     return JSON.parse(localStorage.activeuser);
 }
 
-function storeActiveUser(activeuser)
-{
-  localStorage.activeuser=JSON.stringify(activeuser);
-}
-
-
-function getCart()
-{
-  xhttp.open('GET','/cart');
-  xhttp.send();
-  xhttp.onreadystatechange=function()
-{
-    // readyState 4 means the request is done.
-    // status 200 is a successful return.
-    if (xhttp.readyState == 4 && xhttp.status == 200)
-    {
-      //document.getElementById("users").innerHTML = xhttp.responseText; // 'This is the output.'
-      let cart = JSON.parse( xhttp.responseText) ;
-      if(Array.isArray( cart)  && cart.length )
-      {
-      }
-    }
-    else
-    {
-        // An error occurred during the request.
-       console.log(xhttp.status) ;
-    }
-  };
-}
 function getStoredProducts()
 {
   xhttp.open('GET','/products');
@@ -95,7 +42,6 @@ function getStoredProducts()
   };
 }
 
-
 function addToDOM(objectProduct){
   var divProductAdded=document.createElement("div");
   divProductAdded.setAttribute("id","divProductAdded");
@@ -105,7 +51,7 @@ function addToDOM(objectProduct){
   txtProductName.innerHTML="Name : "+objectProduct.Name;
 
   var txtProductDesc=document.createElement("p");
-  txtProductDesc.innerHTML="Description : "+objectProduct.Descp;
+  txtProductDesc.innerHTML="Description : "+objectProduct.Description;
 
   var txtProductPrice=document.createElement("p");
   txtProductPrice.innerHTML="Price : "+objectProduct.Price;
@@ -123,122 +69,102 @@ function addToDOM(objectProduct){
   else
   {
   var textQuantity=document.createElement("input");
-  textQuantity.setAttribute("id",objectProduct.Id);
+  textQuantity.setAttribute("id",objectProduct._id);
   textQuantity.setAttribute("type","number");
   textQuantity.setAttribute("placeholder","Enter quantity");
   textQuantity.setAttribute("style","width:150px;height:25px");
   divProductAdded.appendChild(textQuantity);
 
   var btnAddToCart=document.createElement("button");
-  btnAddToCart.setAttribute("id","btnAddToCart");
+  btnAddToCart.setAttribute("id",objectProduct._id);
   btnAddToCart.innerHTML="Add to Cart";
   btnAddToCart.setAttribute("style","width:150px;height:25px");
   divProductAdded.appendChild(btnAddToCart);
   btnAddToCart.addEventListener("click",function(event)
 {
-  if(checklogin())
+  if(checkLogin())
   {
-    if(checkQuantity(objectProduct.Id,textQuantity.value))
-    {
-      var indexNo=textQuantity.id;
-      var index=getIndex(indexNo);
-      var x=document.getElementById(objectProduct.Id).value;
-      console.log(x);
-      addToCartArray(products[index],objectProduct.Id,x);
-    }
+    ahttp.open('GET','/checkquantity?id='+btnAddToCart.id);
+  ahttp.send();
+    ahttp.onreadystatechange=function()
+  {
+      if (ahttp.readyState == 4 && ahttp.status == 200)
+      {
+        let available = JSON.parse( ahttp.responseText) ;
+          console.log('available quantity\t',available.Quantity);
+          if(available<=textQuantity.value)
+          {
+            addToCart(btnAddToCart.id,textQuantity.value);
+          }
+          else {
+            alert("Not enough Stock!");
+          }
+      }
+      else
+      {
+         console.log(ahttp.status) ;
+      }
+  };
 }
-else {
-  alert("KIndly login to save items to your cart!");
-}
+  else {
+    alert("Kindly login to save items to your cart!");
+  }
 });
 }
   divListProducts.appendChild(divProductAdded);
 }
 
-
-function checkQuantity(id,quan)
+function checkLogin()
 {
-  var avaiableQuantity;
-  for(var i=0;i<products.length;i++)
+  if(activeuser!=null)
   {
-    if(products[i].Id==id)
-    {
-      avaiableQuantity=parseInt(products[i].Quantity);
-      break;
-    }
-
-  }
-  if(avaiableQuantity<parseInt(quan))
-  {
-    alert("Not enough Stock available!");
-    return false;
-  }
-  else
-  {
-    products[i].Quantity=products[i].Quantity-quan;
-    storeProducts(products);
     return true;
   }
-}
-
-
-function checklogin()
-{
-  if(activeuser=="")
-  return false;
   else {
-    return true;
-  }
-}
-function getIndex(id){
-  for(var i=0;i<products.length;i++)
-  {
-    if(products[i].Id==id)
-    return i;
+    false;
   }
 }
 
-function addToCartArray(obj,indexNo,x)
+
+function addToCart(productid,quantity)
 {
-  var cartObject=new Object();
-  cartObject.User=activeuser;
-  cartObject.Name=obj.Name;
-  cartObject.Id=indexNo;
-  cartObject.Quantity=parseInt(x);
-  cartObject.Price=obj.Price;
-  cart.push(cartObject);
-  console.log(cart);
-  storeCart(cart);
+
+    http.open("POST",'/addToCart',true);
+    http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    http.onreadystatechange = function() {
+    if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+    }
+}
+http.send('id='+productid+'&user='+activeuser+'&quantity='+quantity);
 }
 
-var userName="";
-for(var i=0;i<users.length;i++)
+function addNewToCart(productid,quantity)
 {
-  if(activeuser==users[i].Username)
-  userName=users[i].Name;
+
+    http.open("POST",'/addNewToCart',true);
+    http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    http.onreadystatechange = function() {
+    if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+    }
 }
+http.send('id='+productid+'&user='+activeuser+'&quantity='+quantity);
+}
+
 var user=document.getElementById("puser");
-if(userName=="")
+if(activeuser=="")
 {
-  userName="Guest";
-  user.innerHTML="Welcome, "+userName+"!<br>";
+  user.innerHTML="Welcome, Guest!<br>";
   var alogout=document.createElement("a");
   alogout.innerHTML="Login?";
-  alogout.setAttribute("href","login.html");
+  alogout.setAttribute("href","/login");
   puser.appendChild(alogout);
 }
 else
 {
-user.innerHTML="Welcome, "+userName+"!<br>";
+user.innerHTML="Welcome, "+activeuser+"!<br>";
 var alogout=document.createElement("a");
 alogout.innerHTML="Logout?";
-alogout.setAttribute("href","listproducts.html");
+alogout.setAttribute("href","/listproducts");
 alogout.setAttribute("onclick","userLogout()");
 puser.appendChild(alogout);
-}
-
-function userLogout()
-{
-  activeuser="";
-  storeActiveUser(activeuser);
 }

@@ -1,0 +1,27 @@
+<html>
+<head><title>Register</title></head>
+<body>
+  <div>
+    <h4>Register</h4>
+    </div>
+    <div id='divregisterform'>
+      <form id="formregister" onsubmit="return register()" action="/registerform" method="POST">
+        <label>Name</label><br>
+        <input type="text" id="inputName" name="name" placeholder="Enter Name" required>
+        <br><br>
+        <label>Username</label><br>
+        <input type="text" id="inputUsername" name="username" placeholder="Enter Username" required>
+        <br><br>
+        <label>Password</label><br>
+        <input type="password" id="inputPassword" name="password" placeholder="Enter Password" required onkeyup="checkpassword()">
+        <br><br>
+        <label>Retype Password</label><br>
+        <input type="password" id="inputRePassword" name="password1" placeholder="Retype Password" required onkeyup="checkpassword()">
+        <br><br>
+        <p id="mismatcherror"></p>
+        <button id="btnregister" onclick="register()" >Register</button>
+        </form>
+      </div>
+  </body>
+  	<script src="register.js" type="text/javascript"></script>
+  </html>

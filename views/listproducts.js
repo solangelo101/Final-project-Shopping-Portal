@@ -13,6 +13,11 @@ function getActiveUser()
     return JSON.parse(localStorage.activeuser);
 }
 
+function storeActiveUser(activeuser)
+{
+  localStorage.activeuser=JSON.stringify(activeuser);
+}
+
 function getStoredProducts()
 {
   xhttp.open('GET','/products');
@@ -167,4 +172,10 @@ alogout.innerHTML="Logout?";
 alogout.setAttribute("href","/listproducts");
 alogout.setAttribute("onclick","userLogout()");
 puser.appendChild(alogout);
+}
+
+function userLogout()
+{
+  activeuser="";
+  storeActiveUser(activeuser);
 }

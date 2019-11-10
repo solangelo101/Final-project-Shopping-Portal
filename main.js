@@ -110,7 +110,7 @@ var User=new Schema({
 var users=mongoose.model("users",User);
 app.post('/registerform',(req,res)=>
 {
-  console.log(req.body);
+  console.log('body \t',req.body);
   var myData=new users();
   myData.Name=req.body.name;
   myData.Username=req.body.username;
@@ -135,10 +135,16 @@ app.get('/actualpassword',(req,res)=>
   console.log("Username ",usernameSent);
   users.findOne({Username:usernameSent},function(err,docs)
 {
-  console.log("Actual Password ",docs.Password);
-  res.send(docs.Password);
+  console.log('user found is\t',docs);
+  if(docs==null)
+  {
+    res.send({Password: ""});
+  }
+  else {
+    console.log("Actual Password ",docs.Password);
+    res.send(docs);
+  }
 })
-
 })
 
 app.get('/users',(req,res)=>
@@ -146,6 +152,24 @@ app.get('/users',(req,res)=>
   users.find({},function(err,docs)
 {
   res.send(docs);
+})
+})
+
+app.get('/checkUsername',(req,res)=>
+{
+  inputUsername=req.query.username;
+  console.log('username to check is\t',inputUsername);
+  users.findOne({Username:inputUsername},function(err,docs)
+{
+  if(docs==null)
+  {
+    console.log('Username is Unique!');
+    res.send({Username:null});
+  }
+  else {
+    console.log('username already present\t',docs);
+    res.send(docs);
+  }
 })
 })
 

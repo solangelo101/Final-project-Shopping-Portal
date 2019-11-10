@@ -5,7 +5,7 @@
     <h4>Register</h4>
     </div>
     <div id='divregisterform'>
-      <form id="formregister" onsubmit="return register()" action="/registerform" method="POST">
+      <form id="formregister">
         <label>Name</label><br>
         <input type="text" id="inputName" name="name" placeholder="Enter Name" required>
         <br><br>
@@ -19,7 +19,7 @@
         <input type="password" id="inputRePassword" name="password1" placeholder="Retype Password" required onkeyup="checkpassword()">
         <br><br>
         <p id="mismatcherror"></p>
-        <button id="btnregister" onclick="register()" >Register</button>
+        <button id="btnregister" onclick="checkUsername()">Register</button>
         </form>
       </div>
   </body>

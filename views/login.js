@@ -1,5 +1,6 @@
 var activeuser=getActiveUser();
 var xhttp=new XMLHttpRequest();
+var newuser=document.getElementById("newuser");
 
 function storeActiveUser(activeuser)
 {
@@ -13,45 +14,52 @@ function getActiveUser()
   }
     return JSON.parse(localStorage.activeuser);
 }
-function getActualPassword(username)
+
+function getActualPassword(username,password)
 {
-  xhttp.open("GET", "/actualpassword?username="+username+"");
+  xhttp.open("GET", "/actualpassword?username="+username);
   xhttp.send();
+
+    xhttp.onreadystatechange=function()
+    {
   if (xhttp.readyState == 4 && xhttp.status == 200)
   {
-    return JSON.parse(xhttp.responseText);
+    actualpassword=JSON.parse(xhttp.responseText);
+    console.log('actual password is\t',actualpassword);
+    checkpassword(password,actualpassword.Password,username);
   }
   else
   {
      console.log(xhttp.status) ;
   }
 }
+}
 
 function validate()
 {
-  divgotoregister.innerHTML="";
-  errormessage.innerHTML="";
+errormessage.innerHTML="";
 var username=document.getElementById("inputUsername").value;
 var password=document.getElementById("inputPassword").value;
-checkpassword(username,password);
+getActualPassword(username,password);
 
 }
-function checkpassword(username,password)
+
+function checkpassword(password,actualpass,username)
 {
-  var actualpass=getActualPassword(username);
-  
+  console.log('the actual password is\t',actualpass);
   if(actualpass=="")
   {
     gotoregister();
   }
   else
   {
+    newuser.innerHTML="";
     if(actualpass==password)
     {
       activeuser=username;
       storeActiveUser(activeuser);
       document.getElementById("errormessage").innerHTML="";
-      window.location="listproducts.html";
+      window.location="/listproducts";
     }
     else {
       document.getElementById("errormessage").innerHTML="Password is incorrect!";
@@ -62,11 +70,12 @@ function checkpassword(username,password)
 
 function gotoregister()
 {
+  //divgotoregister.innerHTML="";
   var txtregister=document.createElement("p");
   txtregister.innerHTML="Looks like you are a new user!";
-  var aregister=document.createElement("a");
-  aregister.setAttribute("href","register.html");
-  aregister.innerHTML="Register!?";
-  divgotoregister.appendChild(txtregister);
-  divgotoregister.appendChild(aregister);
+/*  var aregister=document.createElement("a");
+  aregister.setAttribute("href","/register");
+  aregister.innerHTML="Register!?";*/
+  newuser.appendChild(txtregister);
+  //newuser.appendChild(aregister);
 }

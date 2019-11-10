@@ -249,7 +249,7 @@ function editProduct(product){
   var inputProductName=document.createElement("input");
   inputProductName.setAttribute("name","Name");
   inputProductName.setAttribute("type","text");
-  inputProductName.innerHTML=product.Name;
+  inputProductName.setAttribute("value",product.Name);
   inputProductName.setAttribute("placeholder","Enter product name");
   inputProductName.setAttribute("style","wnameth:40%");
   formEditProduct.appendChild(inputProductName);
@@ -281,7 +281,7 @@ function editProduct(product){
   var inputProductPrice=document.createElement("input");
   inputProductPrice.setAttribute("name","Price");
   inputProductPrice.setAttribute("type","text");
-  inputProductPrice.innerHTML=product.Price;
+  inputProductPrice.setAttribute("value",product.Price);
   inputProductPrice.setAttribute("placeholder","Enter product price");
   inputProductPrice.setAttribute("style","width:40%");
   formEditProduct.appendChild(inputProductPrice);
@@ -297,7 +297,7 @@ function editProduct(product){
   var inputProductQuantity=document.createElement("input");
   inputProductQuantity.setAttribute("name","Quantity");
   inputProductQuantity.setAttribute("type","text");
-  inputProductQuantity.innerHTML=product.Quantity;
+  inputProductQuantity.setAttribute("value",product.Quantity);
   inputProductQuantity.setAttribute("style","width:40%");
   inputProductQuantity.setAttribute("placeholder","Enter product Quantity");
   formEditProduct.appendChild(inputProductQuantity);
@@ -334,9 +334,10 @@ function editProduct(product){
     ahttp.onreadystatechange = function() {
   if (ahttp.readyState == 4 && ahttp.status == 200) {
       //console.log(ahttp.responseText);
-      window.location='/page11';   
+
     }
 }
+location.reload(true) ;
   });
 
 btnCancel.addEventListener("click",function(event)

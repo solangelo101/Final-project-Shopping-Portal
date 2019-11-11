@@ -54,6 +54,8 @@ mongoose.set('useFindAndModify', false);
 var Cart=new Schema({
   User:String,
   Id:String,
+  Name:String,
+  Price:Number,
   Quantity:Number,
 })
 var cart=mongoose.model("cart",Cart);
@@ -64,6 +66,8 @@ app.post('/addToCart',(req,res)=>
   var myData=new cart();
   myData.User=req.body.user;
   myData.Id=req.body.id;
+  myData.Name=req.body.name;
+  myData.Price=req.body.price;
   myData.Quantity=req.body.quantity;
   myData.save(function(err)
   {
@@ -80,9 +84,9 @@ app.post('/addToCart',(req,res)=>
     return res.redirect('listproducts');
 })
 
-app.get('/cart',(req,res)=>
+app.get('/getcart',(req,res)=>
 {
-  cart.find({},function(err,docs)
+  cart.find({User:req.query.user},function(err,docs)
 {
   res.send(docs);
 })
@@ -99,6 +103,20 @@ app.get('/checkquantity',(req,res)=>
   }
 });
 })
+
+app.post('/removeFromCart',(req,res)=>
+{
+  console.log(req.body);
+  filter={_id:req.body.id};
+  cart.findOneAndDelete(filter,function(err)
+{
+  if(!err)
+  {
+    console.log('Cart product deleted!');
+  }
+})
+})
+
 
 // array users
 var User=new Schema({
@@ -255,6 +273,22 @@ app.post('/deleteProduct',(req,res)=>{
 {
   res.redirect('/page11');
 });
+})
+
+app.post('/updateProductDatabase',(req,res)=>
+{
+  console.log(req.body);
+  filter={_id:req.body.id};
+  update={Quantity:req.body.quantity};
+  products.findOneAndUpdate(filter,update,function(err,docs)
+{
+  if(!err)
+  {
+    console.log("Quantity updated!");
+    //res.redirect('/page11');
+  }
+});
+
 })
 
 app.listen(5555);

@@ -97,9 +97,9 @@ function addToDOM(objectProduct){
       {
         let available = JSON.parse( ahttp.responseText) ;
           console.log('available quantity\t',available.Quantity);
-          if(available<=textQuantity.value)
+          if(available.Quantity>=parseInt(textQuantity.value))
           {
-            addToCart(btnAddToCart.id,textQuantity.value);
+            addToCart(btnAddToCart.id,textQuantity.value,objectProduct.Name,objectProduct.Price);
           }
           else {
             alert("Not enough Stock!");
@@ -131,7 +131,7 @@ function checkLogin()
 }
 
 
-function addToCart(productid,quantity)
+function addToCart(productid,quantity,name,price)
 {
 
     http.open("POST",'/addToCart',true);
@@ -140,7 +140,7 @@ function addToCart(productid,quantity)
     if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
     }
 }
-http.send('id='+productid+'&user='+activeuser+'&quantity='+quantity);
+http.send('id='+productid+'&user='+activeuser+'&quantity='+quantity+'&name='+name+'&price='+price);
 }
 
 function addNewToCart(productid,quantity)

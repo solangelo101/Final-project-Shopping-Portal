@@ -67,6 +67,7 @@ formregister.appendChild(alogin);
 
 function registerform(name,username,password)
 {
+  activeuser
   xhr.open("POST",'/registerform',true);
   xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
   xhr.onreadystatechange = function() {

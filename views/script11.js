@@ -16,8 +16,8 @@ function getStoredProducts()
     if (xhttp.readyState == 4 && xhttp.status == 200)
     {
       //document.getElementById("users").innerHTML = xhttp.responseText; // 'This is the output.'
-      let products = JSON.parse( xhttp.responseText) ;
-      if(Array.isArray( products)  && products.length )
+      let products = JSON.parse(xhttp.responseText) ;
+      if(Array.isArray(products)  && products.length )
       {
         products.forEach(function(product)
                       {

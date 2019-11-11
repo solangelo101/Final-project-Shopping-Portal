@@ -1,1 +1,0 @@
-var NotificationRenderer={init:function(e){for(var n in e)e.hasOwnProperty(n)&&this.doRender(e[n])},doRender:function(e){new AbeNotification(e.name,e.level,e.msg,e.display).render()}};

@@ -117,6 +117,36 @@ app.post('/removeFromCart',(req,res)=>
 })
 })
 
+app.get('/checkPrevEntry',(req,res)=>
+{
+  console.log('check prev entry sent data is',req.query);
+  filter={Id:req.query.id,User:req.query.user};
+  cart.findOne(filter,function(err,docs){
+    console.log('checkprev entry',docs);
+    if(docs==null)
+    {
+      res.send({Name:null});
+    }
+    else {
+      res.send(docs);
+    }
+  })
+})
+
+app.post('/removeOldEntry',(req,res)=>
+{
+  filter={_id:req.body.id};
+  cart.findOneAndDelete(filter,function(err)
+{
+  if(!err)
+  {
+    console.log("Entry deleted!");
+  }
+  else {
+    console.log('error',err);
+  }
+})
+})
 
 // array users
 var User=new Schema({

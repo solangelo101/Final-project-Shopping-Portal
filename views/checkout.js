@@ -38,13 +38,60 @@ function getCart()
                       {
                         addToDOM(cart1);
                       });
+                      var divBuyNow=document.getElementById("divBuyNow");
+                      var txtTotalPrice=document.createElement("p");
+                      txtTotalPrice.innerHTML=" To Pay : "+totalPrice;
+                      divBuyNow.appendChild(txtTotalPrice);
+                      addSpace(divBuyNow,1);
+                      var btnBuy=document.createElement("button");
+                      btnBuy.innerHTML="Buy Now";
+                      divBuyNow.appendChild(btnBuy);
 
+                      btnBuy.addEventListener("click",function(event)
+                      {
+                        checkForEachProduct(cart);
+                        divProductsInCart.innerHTML="Your Order has been Placed!!";
+                        txtTotalPrice.innerHTML="";
+                        btnBuy.disabled=true;
+                      });
+                      var btnContinue=document.createElement("button");
+                      btnContinue.innerHTML="Continue Shopping";
+                      divBuyNow.appendChild(btnContinue);
+
+                      btnContinue.addEventListener("click",function(event)
+                      {
+                        window.location="/listproducts";
+                      });
       }
       else {
+        var divBuyNow=document.getElementById("divBuyNow");
+        var txtTotalPrice=document.createElement("p");
+        txtTotalPrice.innerHTML=" To Pay : "+totalPrice;
+        divBuyNow.appendChild(txtTotalPrice);
+        addSpace(divBuyNow,1);
+        var btnBuy=document.createElement("button");
+        btnBuy.innerHTML="Buy Now";
+        divBuyNow.appendChild(btnBuy);
+
+        btnBuy.addEventListener("click",function(event)
+        {
+          checkForEachProduct(cart);
+          divProductsInCart.innerHTML="Your Order has been Placed!!";
+          txtTotalPrice.innerHTML="";
+          btnBuy.disabled=true;
+        });
         var emptyCarttxt=document.createElement("p");
         emptyCarttxt.innerHTML="Your cart is empty!";
         divProductsInCart.appendChild(emptyCarttxt);
         btnBuy.disabled=true;
+        var btnContinue=document.createElement("button");
+        btnContinue.innerHTML="Continue Shopping";
+        divBuyNow.appendChild(btnContinue);
+
+        btnContinue.addEventListener("click",function(event)
+        {
+          window.location="/listproducts";
+        });
       }
     }
     else
@@ -53,33 +100,8 @@ function getCart()
        console.log(xhttp.status) ;
     }
   };
+
 }
-
-var divBuyNow=document.getElementById("divBuyNow");
-var txtTotalPrice=document.createElement("p");
-txtTotalPrice.innerHTML=" To Pay : "+totalPrice;
-divBuyNow.appendChild(txtTotalPrice);
-addSpace(divBuyNow,1);
-var btnBuy=document.createElement("button");
-btnBuy.innerHTML="Buy Now";
-divBuyNow.appendChild(btnBuy);
-
-btnBuy.addEventListener("click",function(event)
-{
-  checkForEachProduct(cart);
-  divProductsInCart.innerHTML="Your Order has been Placed!!";
-  txtTotalPrice.innerHTML="";
-  btnBuy.disabled=true;
-});
-
-var btnContinue=document.createElement("button");
-btnContinue.innerHTML="Continue Shopping";
-divBuyNow.appendChild(btnContinue);
-
-btnContinue.addEventListener("click",function(event)
-{
-  window.location="/listproducts";
-});
 
 
 function checkForEachProduct(cart)
@@ -169,11 +191,21 @@ function addToDOM(objectProduct){
   txtProductTotal.innerHTML="Total Price : "+(objectProduct.Price * objectProduct.Quantity);
   totalPrice=totalPrice+(objectProduct.Price*objectProduct.Quantity);
 
+  var btnRemoveFromCart=document.createElement("button");
+  btnRemoveFromCart.setAttribute("id",objectProduct._id);
+  btnRemoveFromCart.innerHTML="Remove";
+  btnRemoveFromCart.addEventListener("click",function(event)
+  {
+    removeFromCart(objectProduct);
+    window.location="/checkout";
+  });
+
   divProductAdded.appendChild(txtProductName);
   divProductAdded.appendChild(txtProductDesc);
   divProductAdded.appendChild(txtProductPrice);
   divProductAdded.appendChild(txtProductTotal);
   divProductsInCart.appendChild(divProductAdded);
+  divProductsInCart.appendChild(btnRemoveFromCart);
   addSpace(divProductsInCart,2);
 
 }

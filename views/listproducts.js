@@ -96,10 +96,10 @@ function addToDOM(objectProduct){
       if (ahttp.readyState == 4 && ahttp.status == 200)
       {
         let available = JSON.parse( ahttp.responseText) ;
-          console.log('available quantity\t',available.Quantity);
+          console.log('available quantity\t',available.Quantity," ",parseInt(textQuantity.value));
           if(available.Quantity>=parseInt(textQuantity.value))
           {
-            addToCart(btnAddToCart.id,textQuantity.value,objectProduct.Name,objectProduct.Price);
+            checkPrevEntry(objectProduct._id,parseInt(textQuantity.value),available.Quantity,objectProduct.Name,objectProduct.Price);
           }
           else {
             alert("Not enough Stock!");
@@ -119,6 +119,38 @@ function addToDOM(objectProduct){
   divListProducts.appendChild(divProductAdded);
 }
 
+function checkPrevEntry(productid,quantity,available,name,price)
+{
+  var chttp=new XMLHttpRequest();
+  chttp.open("GET",'/checkPrevEntry?id='+productid+'&user='+activeuser);
+  chttp.send();
+  chttp.onreadystatechange=function()
+  {
+    if(chttp.readyState==4 & chttp.status==200)
+    {
+      let prevEntry=JSON.parse(chttp.responseText);
+      console.log('Prev entry',prevEntry);
+      if(prevEntry.Name!=null)
+      {
+        oldQuantity=prevEntry.Quantity;
+        newQuantity=parseInt(oldQuantity)+parseInt(quantity);
+        console.log('new quantity',typeof newQuantity,newQuantity)
+        if(available>=newQuantity)
+        {
+        removeOldEntry(prevEntry);
+        addToCart(productid,newQuantity,name,price);
+      }
+      else {
+        alert("Not enough Stock!");
+      }
+      }
+      else {
+          addToCart(productid,quantity,name,price);
+      }
+    }
+  }
+}
+
 function checkLogin()
 {
   if(activeuser!=null)
@@ -130,6 +162,20 @@ function checkLogin()
   }
 }
 
+function removeOldEntry(prevEntry)
+{
+  var rxhr=new XMLHttpRequest();
+  console.log("prevEntry",prevEntry);
+  rxhr.open("POST",'/removeOldEntry',true);
+  rxhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+  rxhr.onreadystatechange=function()
+  {
+    if(rxhr.readyState==4 && rxhr.status==200){
+
+    }
+  }
+  rxhr.send('id='+prevEntry._id);
+}
 
 function addToCart(productid,quantity,name,price)
 {

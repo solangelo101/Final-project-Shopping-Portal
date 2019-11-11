@@ -1,13 +1,34 @@
 var http=new XMLHttpRequest();
 var xhttp=new XMLHttpRequest();
 var ahttp=new XMLHttpRequest();
-var aAddProduct=document.getElementById("aAddProduct");
+var aAddNewProduct=document.getElementById("aAddNewProduct");
 var divAddProduct=document.getElementById("divAddProduct");
 var divListProducts=document.getElementById("divListProducts");
+var activeuser=getActiveUser();
+var start=0;
+var limit=5;
+var index=start+1;
+function storeActiveUser(activeuser)
+{
+  localStorage.activeuser=JSON.stringify(activeuser);
+}
+
+function getActiveUser()
+{
+  if(!localStorage.activeuser)
+  {
+    localStorage.activeuser=JSON.stringify("");
+  }
+    return JSON.parse(localStorage.activeuser);
+}
+
+var aShopProducts=document.crea
+
+
 
 function getStoredProducts()
 {
-  xhttp.open('GET','/products');
+  xhttp.open('GET','/products?since='+start+'&per_page='+limit);
   xhttp.send();
   xhttp.onreadystatechange=function()
 {
@@ -23,7 +44,7 @@ function getStoredProducts()
                       {
                         addToDOM(product);
                       });
-
+                      getProductCount();
       }
     }
     else
@@ -34,17 +55,91 @@ function getStoredProducts()
   };
 }
 
+var divnextprev=document.getElementById("divnextprev");
 
-
-aAddProduct.addEventListener("click",function(event)
+function getProductCount()
 {
-  //unhideAddNewProductLink(divAddProduct);
+  var rxhr=new XMLHttpRequest();
+  rxhr.open("GET",'/getProductCount');
+  rxhr.send();
+  rxhr.onreadystatechange=function()
+{
+    // readyState 4 means the request is done.
+    // status 200 is a successful return.
+    if (rxhr.readyState == 4 && rxhr.status == 200)
+    {
+      //document.getElementById("users").innerHTML = xhttp.responseText; // 'This is the output.'
+      var count1 = JSON.parse(rxhr.responseText);
+      var count=count1.count2;
+      createButtons(count);
+
+    }
+    else
+    {
+        // An error occurred during the request.
+       console.log(rxhr.status) ;
+    }
+  };
+}
+
+function createButtons(count)
+{
+
+var next=document.createElement("button");
+next.innerHTML="Next";
+next.setAttribute("style","width:20%;height:25px");
+next.addEventListener("click",function(event){
+  nextFunction();
+});
+if(start+limit>=count)
+{
+  next.disabled=true;
+}
+
+
+var prev=document.createElement("button");
+prev.innerHTML="Previous";
+prev.setAttribute("style","width:20%;height:25px");
+prev.addEventListener("click",function(event){
+  prevFunction();
+});
+if(start-limit<0)
+{
+  prev.disabled=true;
+}
+divnextprev.appendChild(prev);
+divnextprev.appendChild(next);
+}
+
+function nextFunction()
+{
+start+=5;
+divListProducts.innerHTML="";
+divnextprev.innerHTML="";
+
+
+getStoredProducts();
+
+}
+
+function prevFunction()
+{
+divListProducts.innerHTML="";
+divnextprev.innerHTML="";
+start-=5;
+
+getStoredProducts();
+
+}
+
+aAddNewProduct.addEventListener("click",function(event)
+{  //unhideAddNewProductLink(divAddProduct);
   addNewProduct();
 });
 
 function addNewProduct(){
 
-  hideAddNewProductLink(aAddProduct);
+  hideAddNewProductLink(aAddNewProduct);
   var formAddProduct=document.createElement("form");
   formAddProduct.setAttribute("name","formEditProduct");
 //  formAddProduct.setAttribute("onsubmit","addToObject()");
@@ -130,7 +225,7 @@ function addNewProduct(){
 btnCancel.addEventListener("click",function(event)
 {
   deleteProductForm();
-  unhideAddNewProductLink(aAddProduct);
+  unhideAddNewProductLink(aAddNewProduct);
 });
 }
 
@@ -164,9 +259,9 @@ function addToDOM(objectProduct){
   var divProductAdded=document.createElement("div");
     divProductAdded.setAttribute("id",objectProduct._id);
   //  divProductAdded.setAttribute("style","background-color:#ffe6e6;padding:20px;width:200px");
-
     var txtProductName=document.createElement("p");
-    txtProductName.innerHTML=objectProduct.Name;
+    txtProductName.innerHTML=index+".\t"+objectProduct.Name;
+    index++;
 
     var txtProductDesc=document.createElement("p");
     txtProductDesc.innerHTML=objectProduct.Description;
@@ -223,17 +318,18 @@ function addToDOM(objectProduct){
     http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     http.onreadystatechange = function() {
     if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+      location.reload();
     }
 }
 http.send('number='+objectProduct._id);
   });
-  unhideAddNewProductLink(aAddProduct);
+  unhideAddNewProductLink(aAddNewProduct);
   deleteProductForm();
 }
 
 function editProduct(product){
 
-  hideAddNewProductLink(aAddProduct);
+  hideAddNewProductLink(aAddNewProduct);
   var formEditProduct=document.createElement("div");
 /*  formEditProduct.setAttribute("name","formEditProduct");
 //  formEditProduct.setAttribute("onsubmit","addToObject()");
@@ -343,6 +439,36 @@ location.reload(true) ;
 btnCancel.addEventListener("click",function(event)
 {
   deleteProductForm();
-  unhideAddNewProductLink(aAddProduct);
+  unhideAddNewProductLink(aAddNewProduct);
 });
+}
+
+
+function userLogout()
+{
+  activeuser="";
+  storeActiveUser(activeuser);
+  location.reload();
+}
+
+var aAddProduct=document.getElementById("aAddProduct");
+if(activeuser!="admin")
+{
+  aAddProduct.style.display="none";
+  aAddProduct.style.visibility="hidden";
+}
+
+var txtWelcome=document.getElementById("txtWelcome");
+var aLogin=document.getElementById("aLogin");
+var aLogout=document.getElementById("aLogout");
+var aRegister=document.getElementById("aRegister");
+if(activeuser=="")
+{
+  txtWelcome.innerHTML="Welcome, Guest!";
+  aLogout.style.display="none";
+}
+else {
+  txtWelcome.innerHTML="Welcome, "+activeuser+"!";
+  aLogin.style.display="none";
+  aRegister.style.display="none";
 }

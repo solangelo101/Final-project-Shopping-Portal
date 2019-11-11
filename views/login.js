@@ -79,3 +79,31 @@ function gotoregister()
   newuser.appendChild(txtregister);
   //newuser.appendChild(aregister);
 }
+
+function userLogout()
+{
+  activeuser="";
+  storeActiveUser(activeuser);
+  location.reload();
+}
+
+var aAddProduct=document.getElementById("aAddProduct");
+if(activeuser!="admin")
+{
+  aAddProduct.style.display="none";
+}
+
+var txtWelcome=document.getElementById("txtWelcome");
+var aLogin=document.getElementById("aLogin");
+var aLogout=document.getElementById("aLogout");
+var aRegister=document.getElementById("aRegister");
+if(activeuser=="")
+{
+  txtWelcome.innerHTML="Welcome, Guest!";
+  aLogout.style.display="none";
+}
+else {
+  txtWelcome.innerHTML="Welcome, "+activeuser+"!";
+  aLogin.style.display="none";
+  aRegister.style.display="none";
+}

@@ -184,8 +184,10 @@ function addToDOM(objectProduct){
   var txtProductDesc=document.createElement("p");
   txtProductDesc.innerHTML="Price : "+objectProduct.Price;
 
-  var txtProductPrice=document.createElement("p");
-  txtProductPrice.innerHTML="Quantity : "+objectProduct.Quantity;
+  var inputProductQuantity=document.createElement("input");
+  inputProductQuantity.setAttribute("type","number");
+  inputProductQuantity.setAttribute("value",objectProduct.Quantity);
+  
 
   var txtProductTotal=document.createElement("p");
   txtProductTotal.innerHTML="Total Price : "+(objectProduct.Price * objectProduct.Quantity);
@@ -217,4 +219,33 @@ function addSpace(target,number){
     target.appendChild(blankLine);
   }
 }
+}
+
+
+function userLogout()
+{
+  activeuser="";
+  storeActiveUser(activeuser);
+  location.reload();
+}
+
+var aAddProduct=document.getElementById("aAddProduct");
+if(activeuser!="admin")
+{
+  aAddProduct.style.display="none";
+}
+
+var txtWelcome=document.getElementById("txtWelcome");
+var aLogin=document.getElementById("aLogin");
+var aLogout=document.getElementById("aLogout");
+var aRegister=document.getElementById("aRegister");
+if(activeuser=="")
+{
+  txtWelcome.innerHTML="Welcome, Guest!";
+  aLogout.style.display="none";
+}
+else {
+  txtWelcome.innerHTML="Welcome, "+activeuser+"!";
+  aLogin.style.display="none";
+  aRegister.style.display="none";
 }

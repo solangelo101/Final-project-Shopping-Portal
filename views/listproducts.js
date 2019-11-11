@@ -20,7 +20,7 @@ function storeActiveUser(activeuser)
 
 function getStoredProducts()
 {
-  xhttp.open('GET','/products');
+  xhttp.open('GET','/products?since='+start+"&per_page=10");
   xhttp.send();
   xhttp.onreadystatechange=function()
 {
@@ -37,6 +37,7 @@ function getStoredProducts()
                         addToDOM(product);
                       });
 
+                      createButtons();
       }
     }
     else
@@ -45,6 +46,54 @@ function getStoredProducts()
        console.log(xhttp.status) ;
     }
   };
+}
+
+  var divnextprev=document.getElementById("divnextprev");
+ var start=0;
+function createButtons()
+{
+  var next=document.createElement("button");
+  next.innerHTML="Next";
+  next.addEventListener("click",function(event){
+    nextFunction();
+  });
+
+
+  var prev=document.createElement("button");
+  prev.innerHTML="Previous";
+  prev.addEventListener("click",function(event){
+    prevFunction();
+  });
+  divnextprev.appendChild(prev);
+    divnextprev.appendChild(next);
+}
+
+function nextFunction()
+{
+  divListProducts.innerHTML="";
+  divnextprev.innerHTML="";
+  start+=5;
+
+  getStoredProducts();
+
+}
+
+function prevFunction()
+{
+  divListProducts.innerHTML="";
+  divnextprev.innerHTML="";
+  start-=5;
+
+  getStoredProducts();
+
+}
+
+function addSpace(target,number){
+  for(var i=0;i<number;i++)
+  {
+    var blankLine=document.createElement("br");
+    target.appendChild(blankLine);
+  }
 }
 
 function addToDOM(objectProduct){
@@ -89,8 +138,13 @@ function addToDOM(objectProduct){
 {
   if(checkLogin())
   {
+    if(textQuantity.value=="" || parseInt(textQuantity.value)<=0)
+    {
+      alert("Please enter a valid value!");
+    }
+    else {
     ahttp.open('GET','/checkquantity?id='+btnAddToCart.id);
-  ahttp.send();
+    ahttp.send();
     ahttp.onreadystatechange=function()
   {
       if (ahttp.readyState == 4 && ahttp.status == 200)
@@ -109,11 +163,13 @@ function addToDOM(objectProduct){
       {
          console.log(ahttp.status) ;
       }
+
   };
 }
-  else {
-    alert("Kindly login to save items to your cart!");
-  }
+}
+else {
+  alert("Kindly login to save items to your cart!");
+}
 });
 }
   divListProducts.appendChild(divProductAdded);
@@ -153,7 +209,7 @@ function checkPrevEntry(productid,quantity,available,name,price)
 
 function checkLogin()
 {
-  if(activeuser!=null)
+  if(activeuser!="")
   {
     return true;
   }
@@ -201,27 +257,30 @@ function addNewToCart(productid,quantity)
 http.send('id='+productid+'&user='+activeuser+'&quantity='+quantity);
 }
 
-var user=document.getElementById("puser");
-if(activeuser=="")
-{
-  user.innerHTML="Welcome, Guest!<br>";
-  var alogout=document.createElement("a");
-  alogout.innerHTML="Login?";
-  alogout.setAttribute("href","/login");
-  puser.appendChild(alogout);
-}
-else
-{
-user.innerHTML="Welcome, "+activeuser+"!<br>";
-var alogout=document.createElement("a");
-alogout.innerHTML="Logout?";
-alogout.setAttribute("href","/listproducts");
-alogout.setAttribute("onclick","userLogout()");
-puser.appendChild(alogout);
-}
-
 function userLogout()
 {
   activeuser="";
   storeActiveUser(activeuser);
+  location.reload();
+}
+
+var aAddProduct=document.getElementById("aAddProduct");
+if(activeuser!="admin")
+{
+  aAddProduct.style.display="none";
+}
+
+var txtWelcome=document.getElementById("txtWelcome");
+var aLogin=document.getElementById("aLogin");
+var aLogout=document.getElementById("aLogout");
+var aRegister=document.getElementById("aRegister");
+if(activeuser=="")
+{
+  txtWelcome.innerHTML="Welcome, Guest!";
+  aLogout.style.display="none";
+}
+else {
+  txtWelcome.innerHTML="Welcome, "+activeuser+"!";
+  aLogin.style.display="none";
+  aRegister.style.display="none";
 }

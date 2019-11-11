@@ -1,8 +1,20 @@
 <html>
 	<head>
 		<title>Products Available</title>
+		  <link rel="stylesheet" href="commonstyle.css">
 	</head>
 	<body onload="getCart()">
+		<div id="menu" >
+			<ul style="background-color:limegreen">
+						<li style="float:left"><a href="/listproducts">Shop</a></li>
+						<li style="float:left"><a href="/checkout">Your Cart</a></li>
+						<li style="float:left"><a href="/page11" id="aAddProduct">Add Products</a></li>
+						<li><a href="/register" id="aRegister">Register</a></li>
+						<li><a href="/login" id="aLogin">Login</a></li>
+						<li><a href="#" id="aLogout" onclick="userLogout()">Logout</a></li>
+						<li><a id="txtWelcome"></a></li>
+				</ul>
+		</div>
 		<div>
 			<h4> CHECKOUT<h4>
 		</div>

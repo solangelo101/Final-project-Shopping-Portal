@@ -170,7 +170,7 @@ app.post('/registerform',(req,res)=>
   {
     console.log("Data Saved");
     console.log(myData);
-    res.redirect('/listproducts')
+    res.redirect('/listproducts');
   }
   else {
     console.log(err)
@@ -262,9 +262,12 @@ app.post('/addProduct',(req,res)=>
 })
 app.get('/products',(req,res)=>
 {
-  products.find({},function(err,docs)
+  console.log('skip and limit is',req.query);
+  skipno=parseInt(req.query.since);
+  limitno=parseInt(req.query.per_page);
+  products.find({},null,{skip:skipno,limit:limitno},function(err,docs)
 {
-//  console.log('database products are',docs);
+ //console.log('database products are',docs);
   res.send(docs);
 });
 })
@@ -318,7 +321,15 @@ app.post('/updateProductDatabase',(req,res)=>
     //res.redirect('/page11');
   }
 });
+})
 
+app.get('/getProductCount',(req,res)=>
+{
+  products.countDocuments(function(err,docs)
+{
+  console.log(docs);
+  res.send({count2:docs})
+})
 })
 
 app.listen(5555);

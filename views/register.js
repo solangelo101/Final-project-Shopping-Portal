@@ -1,3 +1,4 @@
+var usernametaken=document.getElementById("usernametaken");
 var xhttp=new XMLHttpRequest();
 var xhr = new XMLHttpRequest();
 var activeuser=getActiveUser();
@@ -45,25 +46,28 @@ function checkUsername()
     if (xhttp.readyState == 4 && xhttp.status == 200)
     {
       var checkedUsername=JSON.parse(xhttp.responseText);
+      console.log('username stuff recieved is',checkedUsername);
       if(checkedUsername.Username==null)
       {
         registerform(name,username,password);
       }
       else {
-        alert("Username already taken!");
+
+      //  usernametaken.innerHTML="This username is already taken!!";
+      alert("This username is already taken!!");
       }
     }
     else
     {
-       console.log(xhttp.status) ;
+       console.log('error is',xhttp.status) ;
     }
   };
 }
 var alogin=document.createElement("a");
 alogin.innerHTML="Or Login?";
 alogin.setAttribute("href","/login");
-var formregister=document.getElementById("formregister");
-formregister.appendChild(alogin);
+var btnregister=document.getElementById("btnregister");
+divregisterform.appendChild(alogin);
 
 function registerform(name,username,password)
 {
@@ -72,7 +76,39 @@ function registerform(name,username,password)
   xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
   xhr.onreadystatechange = function() {
   if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+    activeuser=username;
+    storeActiveUser(activeuser);
+    window.location='/listproducts';
   }
 }
 xhr.send('name='+name+'&username='+username+'&password='+password);
+}
+
+
+function userLogout()
+{
+  activeuser="";
+  storeActiveUser(activeuser);
+  location.reload();
+}
+
+var aAddProduct=document.getElementById("aAddProduct");
+if(activeuser!="admin")
+{
+  aAddProduct.style.display="none";
+}
+
+var txtWelcome=document.getElementById("txtWelcome");
+var aLogin=document.getElementById("aLogin");
+var aLogout=document.getElementById("aLogout");
+var aRegister=document.getElementById("aRegister");
+if(activeuser=="")
+{
+  txtWelcome.innerHTML="Welcome, Guest!";
+  aLogout.style.display="none";
+}
+else {
+  txtWelcome.innerHTML="Welcome, "+activeuser+"!";
+  aLogin.style.display="none";
+  aRegister.style.display="none";
 }

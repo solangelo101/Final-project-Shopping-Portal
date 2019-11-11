@@ -8,6 +8,7 @@ var activeuser=getActiveUser();
 var start=0;
 var limit=5;
 var index=start+1;
+
 function storeActiveUser(activeuser)
 {
   localStorage.activeuser=JSON.stringify(activeuser);
@@ -21,8 +22,6 @@ function getActiveUser()
   }
     return JSON.parse(localStorage.activeuser);
 }
-
-var aShopProducts=document.crea
 
 
 
@@ -56,6 +55,7 @@ function getStoredProducts()
 }
 
 var divnextprev=document.getElementById("divnextprev");
+var divnextprev1=document.getElementById("divnextprev1");
 
 function getProductCount()
 {
@@ -72,7 +72,7 @@ function getProductCount()
       var count1 = JSON.parse(rxhr.responseText);
       var count=count1.count2;
       createButtons(count);
-
+      createButtons1(count);
     }
     else
     {
@@ -87,7 +87,7 @@ function createButtons(count)
 
 var next=document.createElement("button");
 next.innerHTML="Next";
-next.setAttribute("style","width:20%;height:25px");
+next.setAttribute("style","width:100px;height:25px");
 next.addEventListener("click",function(event){
   nextFunction();
 });
@@ -99,7 +99,7 @@ if(start+limit>=count)
 
 var prev=document.createElement("button");
 prev.innerHTML="Previous";
-prev.setAttribute("style","width:20%;height:25px");
+prev.setAttribute("style","width:100px;height:25px");
 prev.addEventListener("click",function(event){
   prevFunction();
 });
@@ -111,12 +111,43 @@ divnextprev.appendChild(prev);
 divnextprev.appendChild(next);
 }
 
+function createButtons1(count)
+{
+
+var next1=document.createElement("button");
+next1.innerHTML="Next";
+next1.setAttribute("style","width:100px;height:25px");
+next1.addEventListener("click",function(event){
+  nextFunction();
+});
+if(start+limit>=count)
+{
+  next1.disabled=true;
+}
+
+
+var prev1=document.createElement("button");
+prev1.innerHTML="Previous";
+prev1.setAttribute("style","width:100px;height:25px");
+prev1.addEventListener("click",function(event){
+  prevFunction();
+});
+if(start-limit<0)
+{
+  prev1.disabled=true;
+}
+divnextprev1.appendChild(prev1);
+divnextprev1.appendChild(next1);
+}
+
+
 function nextFunction()
 {
 start+=5;
 divListProducts.innerHTML="";
 divnextprev.innerHTML="";
-
+divnextprev1.innerHTML="";
+index=start+1;
 
 getStoredProducts();
 
@@ -126,8 +157,9 @@ function prevFunction()
 {
 divListProducts.innerHTML="";
 divnextprev.innerHTML="";
+divnextprev1.innerHTML="";
 start-=5;
-
+index=start+1;
 getStoredProducts();
 
 }
@@ -258,9 +290,9 @@ function hideAddNewProductLink(target)
 function addToDOM(objectProduct){
   var divProductAdded=document.createElement("div");
     divProductAdded.setAttribute("id",objectProduct._id);
-  //  divProductAdded.setAttribute("style","background-color:#ffe6e6;padding:20px;width:200px");
+  //  divProductAdded.setAttribute("style","background-color:#ffe6e6;padding:20px;width:100px");
     var txtProductName=document.createElement("p");
-    txtProductName.innerHTML=index+".\t"+objectProduct.Name;
+    txtProductName.innerHTML=index+".<br><br>"+objectProduct.Name;
     index++;
 
     var txtProductDesc=document.createElement("p");

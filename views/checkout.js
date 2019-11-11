@@ -184,10 +184,11 @@ function addToDOM(objectProduct){
   var txtProductDesc=document.createElement("p");
   txtProductDesc.innerHTML="Price : "+objectProduct.Price;
 
-  var inputProductQuantity=document.createElement("input");
-  inputProductQuantity.setAttribute("type","number");
-  inputProductQuantity.setAttribute("value",objectProduct.Quantity);
-  
+  var inputProductQuantity=document.createElement("p");
+  //inputProductQuantity.setAttribute("type","number");
+  //inputProductQuantity.setAttribute("value",objectProduct.Quantity);
+  inputProductQuantity.innerHTML='Quantity : '+objectProduct.Quantity;
+
 
   var txtProductTotal=document.createElement("p");
   txtProductTotal.innerHTML="Total Price : "+(objectProduct.Price * objectProduct.Quantity);
@@ -204,7 +205,7 @@ function addToDOM(objectProduct){
 
   divProductAdded.appendChild(txtProductName);
   divProductAdded.appendChild(txtProductDesc);
-  divProductAdded.appendChild(txtProductPrice);
+  divProductAdded.appendChild(inputProductQuantity);
   divProductAdded.appendChild(txtProductTotal);
   divProductsInCart.appendChild(divProductAdded);
   divProductsInCart.appendChild(btnRemoveFromCart);

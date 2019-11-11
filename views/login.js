@@ -107,3 +107,7 @@ else {
   aLogin.style.display="none";
   aRegister.style.display="none";
 }
+if(window.location.pathname=='/login')
+{
+  aLogin.style.display="none";
+}

@@ -112,3 +112,7 @@ else {
   aLogin.style.display="none";
   aRegister.style.display="none";
 }
+if(window.location.pathname=='/register')
+{
+  aRegister.style.display="none";
+}
